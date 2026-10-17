@@ -1,0 +1,546 @@
+<title>Canaan + West Fork Loop</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root {
+  --bg: #f2f4ef;
+  --card: #ffffff;
+  --ink: #1d2920;
+  --muted: #5a6a5f;
+  --line: #d3dbd1;
+  --wash: #e6ebe3;
+  --fri: #36668a;
+  --sat: #a8731a;
+  --sun: #3c7a4b;
+  --blaze: #e2560b;
+  --water: #2f7fb5;
+  --onmark: #ffffff;
+  --display: "Zilla Slab", "Rockwell", "Roboto Slab", Georgia, serif;
+  --body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111713; --card: #19211c; --ink: #e2e9e3; --muted: #98a79c; --line: #2c3830; --wash: #202a24;
+    --fri: #7eaacb; --sat: #dba64c; --sun: #74b787; --blaze: #ff7b35; --water: #6fb4e3; --onmark: #0f1511;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111713; --card: #19211c; --ink: #e2e9e3; --muted: #98a79c; --line: #2c3830; --wash: #202a24;
+  --fri: #7eaacb; --sat: #dba64c; --sun: #74b787; --blaze: #ff7b35; --water: #6fb4e3; --onmark: #0f1511;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/1.5 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1280px; margin: 0 auto; padding-block: 28px 48px; display: flex; flex-direction: column; gap: 24px; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--blaze); outline-offset: 2px; border-radius: 4px; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+header.top { display: grid; gap: 14px; }
+.eyebrow { font: 600 12px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+h1 { font: 700 clamp(34px, 5.2vw, 58px)/1 var(--display); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+h1 .plus { color: var(--blaze); }
+.lede { margin: 0; max-width: 64ch; color: var(--muted); font-size: 17px; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 4px 0 0; padding: 0; list-style: none; }
+.facts li { display: grid; gap: 2px; }
+.facts b { font: 700 24px/1.1 var(--display); }
+.facts span { font-size: 13px; color: var(--muted); }
+.files { display: flex; flex-wrap: wrap; gap: 8px; }
+.files a { font-size: 14px; text-decoration: none; border: 1px solid var(--line); background: var(--card); padding: 6px 12px; border-radius: 999px; }
+.files a:hover { border-color: var(--ink); }
+
+nav.days { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+nav.days button {
+  flex: 0 0 auto; display: grid; gap: 2px; text-align: left; cursor: pointer;
+  background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 14px; font: inherit; min-width: 120px; position: relative;
+}
+nav.days button .d { font: 700 17px/1.1 var(--display); display: flex; align-items: center; gap: 8px; }
+nav.days button .d i { width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--muted)); display: inline-block; }
+nav.days button .s { font-size: 13px; color: var(--muted); }
+nav.days button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--c, var(--ink)); }
+
+.split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.mapcol { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); display: grid; gap: 12px; min-width: 0; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+#map { display: block; width: 100%; aspect-ratio: 4 / 3.4; max-width: 100%; background: var(--wash); touch-action: manipulation; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { display: inline-block; width: 18px; height: 4px; border-radius: 2px; background: var(--c); }
+.legend em { font-style: normal; font: 500 11px/1 var(--mono); width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; color: var(--onmark); background: var(--c); }
+.profwrap { padding: 10px 6px 4px; }
+.profhead { display: flex; justify-content: space-between; gap: 12px; padding: 0 8px 4px; font-size: 13px; color: var(--muted); }
+#readout { color: var(--ink); }
+#prof { display: block; width: 100%; height: 150px; touch-action: none; cursor: crosshair; }
+
+.dircol { display: grid; gap: 14px; min-width: 0; }
+.dayhead { display: grid; gap: 6px; padding: 16px 18px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); border-top: 4px solid var(--c); }
+.dayhead h2 { margin: 0; font: 700 26px/1.1 var(--display); text-wrap: balance; }
+.dayhead p { margin: 0; color: var(--muted); }
+.dayhead .nums { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 14px; }
+.dayhead .nums b { font-family: var(--mono); font-weight: 500; }
+ol.steps { list-style: none; margin: 0; padding: 0; display: grid; }
+.step { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 0 12px; padding: 12px 6px 12px 0; border-bottom: 1px solid var(--line); cursor: pointer; border-radius: 8px; }
+.step:hover { background: var(--wash); }
+.step[aria-current="true"] { background: var(--wash); box-shadow: inset 3px 0 0 var(--blaze); }
+.step .mp { font: 500 13px/1.3 var(--mono); color: var(--muted); text-align: right; padding-top: 3px; }
+.step .mp b { display: block; color: var(--ink); font-weight: 500; font-size: 15px; }
+.step h3 { margin: 0; font: 600 17px/1.3 var(--body); }
+.step .meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; align-items: center; }
+.chip { font-size: 12px; line-height: 1; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.chip.surface { color: var(--ink); background: var(--wash); border-color: transparent; }
+.chip.num { font-family: var(--mono); }
+.step p { margin: 0; color: var(--muted); font-size: 15px; max-width: 62ch; }
+.step .gm { display: inline-block; margin-top: 6px; font-size: 13px; color: var(--muted); }
+.step .gm:hover { color: var(--ink); }
+.stop { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 0 12px; padding: 12px 6px 12px 0; border-bottom: 1px solid var(--line); }
+.stop .mp { display: flex; justify-content: flex-end; padding-top: 1px; }
+.glyph { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 500 12px/1 var(--mono); color: var(--onmark); background: var(--c); }
+.stop h4 { margin: 0; font: 600 16px/1.3 var(--body); display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.stop h4 small { font: 500 12px/1 var(--mono); color: var(--muted); }
+.stop p { margin: 2px 0 0; font-size: 14px; color: var(--muted); max-width: 62ch; }
+.stop.food { background: color-mix(in srgb, var(--blaze) 7%, transparent); border-radius: 8px; }
+.opts { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; font-size: 14px; }
+.opts li { display: grid; grid-template-columns: minmax(0, 13em) minmax(0, 1fr); gap: 10px; }
+.opts b { font-weight: 600; }
+.opts span { color: var(--muted); }
+.drive { display: grid; gap: 10px; padding: 16px 18px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.drive ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.btn { display: inline-block; text-decoration: none; background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 14px; justify-self: start; }
+
+section.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+.note { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+.note h3 { margin: 0 0 6px; font: 700 18px/1.2 var(--display); }
+.note p { margin: 0; font-size: 14px; color: var(--muted); }
+section.food h2, section.notes-h h2 { font: 700 28px/1.1 var(--display); margin: 0 0 12px; }
+.tablewrap { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 560px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td.mi { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; max-width: 90ch; }
+footer p { margin: 0; }
+
+@media (max-width: 880px) {
+  .split { grid-template-columns: minmax(0, 1fr); }
+  .mapcol { position: static; }
+  #map { aspect-ratio: 1 / 1; }
+}
+@media (max-width: 480px) {
+  .step, .stop { grid-template-columns: 52px minmax(0, 1fr); }
+  .opts li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .step { transition: background .15s; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Monongahela National Forest, West Virginia · 3 riding days</div>
+    <h1>Canaan <span class="plus">+</span> West Fork Loop</h1>
+    <p class="lede">Two bikepacking.com routes stitched into one loop from the Alpena lot on US-33. Friday and Saturday ride the Canaan Valley &amp; Forks of Cheat loop, Sunday rides the West Fork loop. Tap any step to see it on the map.</p>
+    <ul class="facts" id="facts"></ul>
+    <div class="files">
+      <a href="https://github.com/brandonapol/bikepacking/blob/main/wv-canaan-westfork/wv-canaan-westfork-loop.gpx" target="_blank" rel="noopener">GPX for Ride with GPS</a>
+      <a href="https://github.com/brandonapol/bikepacking/blob/main/wv-canaan-westfork/wv-canaan-westfork-loop-by-day.gpx" target="_blank" rel="noopener">GPX by day for onX</a>
+      <a href="https://github.com/brandonapol/bikepacking/tree/main/wv-canaan-westfork" target="_blank" rel="noopener">Trip notes</a>
+    </div>
+  </header>
+
+  <nav class="days" id="days" aria-label="Choose a day"></nav>
+
+  <div class="split">
+    <section class="mapcol" aria-label="Map and elevation">
+      <div class="panel">
+        <svg id="map" role="img" aria-label="Route map"></svg>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="panel profwrap">
+        <div class="profhead"><span id="proftitle">Elevation</span><span id="readout" class="mono">Hover or drag for mile and elevation</span></div>
+        <svg id="prof" role="img" aria-label="Elevation profile"></svg>
+      </div>
+    </section>
+    <section class="dircol" id="dir" aria-label="Directions"></section>
+  </div>
+
+  <section class="food">
+    <h2>Food and water by mile</h2>
+    <div class="tablewrap"><table id="foodtable"></table></div>
+  </section>
+
+  <section class="notes-h">
+    <h2>Good to know</h2>
+    <section class="notes">
+      <div class="note"><h3>No cell service</h3><p>Most of the route has none. Download offline maps in onX and Ride with GPS before leaving Dayton, and load the GPX on both phones.</p></div>
+      <div class="note"><h3>Camping rules</h3><p>Dispersed camping is fine on Monongahela NF land 100+ ft from roads, trails and rec sites. Not in state parks or on private land. Parsons, Thomas and Davis are mixed ownership, so Friday night means the Blackwater Falls SP campground, Canaan Valley SP or a motel.</p></div>
+      <div class="note"><h3>Water</h3><p>Rivers everywhere on Friday and Saturday; filter it. On Sunday the Middle Mountain hand pump at mile 34.5 is the only potable water. Bear Heaven has none.</p></div>
+      <div class="note"><h3>FR 209</h3><p>Not on this route. FR 209 runs off US-250 near Cheat Bridge, about 20 mi upstream of the Shavers Fork miles we ride. Its bridge closure ended Aug 14, 2025. Check MNF alerts for anything new.</p></div>
+      <div class="note"><h3>Saturday night</h3><p>We end Saturday at the car. Bear Heaven is a 4 mi drive up FR 91, so drive up, camp, and drive back down Sunday morning.</p></div>
+      <div class="note"><h3>Hunting season</h3><p>Archery deer season runs through the fall in WV. A blaze orange vest or helmet cover is cheap insurance.</p></div>
+    </section>
+  </section>
+
+  <footer>
+    <p>Routes: <a href="https://bikepacking.com/routes/canaan-valley-forks-of-cheat/" target="_blank" rel="noopener">Canaan Valley and the Forks of Cheat</a> and <a href="https://bikepacking.com/routes/west-fork-overnighter/" target="_blank" rel="noopener">West Fork Overnighter</a> on bikepacking.com. Mileage and climbing are computed from the GPX; climbing totals match the published numbers within about 1%.</p>
+    <p>Step names come from the GPX shape and published route guides, not a turn-by-turn cue sheet. Some road names are approximate, so follow the GPX line in onX or Ride with GPS at every junction. Restaurant listings come from tourism sites and local news and may be out of date; check hours before you count on them.</p>
+  </footer>
+</div>
+
+<script>
+const DATA = __DATA__;
+
+const DAY_COLOR = { fri: "var(--fri)", sat: "var(--sat)", sun: "var(--sun)" };
+const KIND = {
+  food: { g: "F", c: "var(--blaze)", label: "Food" },
+  water: { g: "W", c: "var(--water)", label: "Water" },
+  camp: { g: "C", c: "var(--sun)", label: "Camping" },
+  park: { g: "P", c: "var(--ink)", label: "Parking" },
+  sight: { g: "V", c: "var(--muted)", label: "Sight" },
+};
+const DRIVE_URL = "https://www.google.com/maps/dir/Dayton,+OH/Mothman+Statue,+Point+Pleasant,+WV/38.931552,-79.680563";
+
+const days = DATA.days;
+const offsets = days.reduce((acc, d, i) => [...acc, i === 0 ? 0 : acc[i - 1] + days[i - 1].miles], []);
+const dayById = Object.fromEntries(days.map((d, i) => [d.id, { ...d, offset: offsets[i] }]));
+const totalMiles = days.reduce((s, d) => s + d.miles, 0);
+const totalGain = days.reduce((s, d) => s + d.gain, 0);
+
+const lat0 = 38.9;
+const kx = Math.cos(lat0 * Math.PI / 180) * 111.32;
+const ky = 110.57;
+const px = (lat, lon) => [(lon + 80) * kx, (39.3 - lat) * ky];
+
+const fmt = n => n.toLocaleString("en-US");
+const mi = n => n.toFixed(1);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const gmaps = (lat, lon) => `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
+
+const readStore = () => { try { return localStorage.getItem("wvloop-day"); } catch { return null; } };
+const writeStore = v => { try { localStorage.setItem("wvloop-day", v); } catch {} };
+const initialDay = () => {
+  const h = location.hash.replace("#", "");
+  const valid = ["all", "thu", "fri", "sat", "sun"];
+  return valid.includes(h) ? h : valid.includes(readStore()) ? readStore() : "all";
+};
+
+let state = { day: initialDay(), step: null, hover: null };
+const setState = patch => { state = { ...state, ...patch }; render(); };
+
+const stepsFor = id => DATA.steps.map((s, i) => ({ ...s, i })).filter(s => id === "all" || s.day === id);
+const stopsFor = id => DATA.stops.filter(s => id === "all" || s.day === id);
+const visibleDays = id => (id === "all" || id === "thu") ? days : [dayById[id]];
+
+const ptsBetween = (dayId, a, b) => dayById[dayId].pts.filter(p => p[3] >= a - 0.03 && p[3] <= b + 0.03);
+
+const bbox = pts => pts.reduce((bb, [la, lo]) => {
+  const [x, y] = px(la, lo);
+  return [Math.min(bb[0], x), Math.min(bb[1], y), Math.max(bb[2], x), Math.max(bb[3], y)];
+}, [Infinity, Infinity, -Infinity, -Infinity]);
+
+const fitBox = (bb, aspect, padFrac, minSpan) => {
+  const cx = (bb[0] + bb[2]) / 2, cy = (bb[1] + bb[3]) / 2;
+  const w0 = Math.max(bb[2] - bb[0], minSpan) * (1 + padFrac);
+  const h0 = Math.max(bb[3] - bb[1], minSpan) * (1 + padFrac);
+  const [w, h] = w0 / h0 > aspect ? [w0, w0 / aspect] : [h0 * aspect, h0];
+  return [cx - w / 2, cy - h / 2, w, h];
+};
+
+const pathD = pts => pts.map(([la, lo], k) => { const [x, y] = px(la, lo); return `${k ? "L" : "M"}${x.toFixed(2)} ${y.toFixed(2)}`; }).join("");
+
+function renderFacts() {
+  const items = [
+    [`${mi(totalMiles)} mi`, "total distance"],
+    [`+${fmt(totalGain)} ft`, "total climbing"],
+    ["3 days", "about 50 mi each"],
+    ["Alpena", "start and finish, US-33"],
+  ];
+  document.getElementById("facts").innerHTML = items.map(([b, s]) => `<li><b>${b}</b><span>${s}</span></li>`).join("");
+}
+
+function renderNav() {
+  const tabs = [
+    { id: "all", d: "Whole trip", s: `${mi(totalMiles)} mi · +${fmt(totalGain)} ft`, c: "var(--ink)" },
+    { id: "thu", d: "Thu", s: "Drive + camp", c: "var(--muted)" },
+    ...days.map(d => ({ id: d.id, d: `${d.label}`, s: `${mi(d.miles)} mi · +${fmt(d.gain)} ft`, c: DAY_COLOR[d.id] })),
+  ];
+  const nav = document.getElementById("days");
+  nav.innerHTML = tabs.map(t => `<button type="button" id="tab-${t.id}" data-day="${t.id}" aria-pressed="${state.day === t.id}" style="--c:${t.c}"><span class="d"><i></i>${t.d}</span><span class="s">${t.s}</span></button>`).join("");
+}
+
+function renderLegend() {
+  const lines = days.map(d => `<span><i style="--c:${DAY_COLOR[d.id]}"></i>${d.label}</span>`).join("");
+  const kinds = Object.values(KIND).map(k => `<span><em style="--c:${k.c}">${k.g}</em>${k.label}</span>`).join("");
+  document.getElementById("legend").innerHTML = lines + kinds;
+}
+
+function renderMap() {
+  const svg = document.getElementById("map");
+  const rect = svg.getBoundingClientRect();
+  const aspect = rect.width && rect.height ? rect.width / rect.height : 4 / 3.4;
+  const step = state.step != null ? DATA.steps[state.step] : null;
+  const focusPts = step
+    ? ptsBetween(step.day, step.a, Math.max(step.b, step.a + 0.5))
+    : visibleDays(state.day).flatMap(d => d.pts);
+  const vb = fitBox(bbox(focusPts), aspect, step ? 0.9 : 0.12, step ? 3 : 5);
+  const unit = vb[2] / Math.max(rect.width || 600, 1);
+  svg.setAttribute("viewBox", vb.map(v => v.toFixed(2)).join(" "));
+
+  const grid = (() => {
+    const lines = [];
+    const g = 0.05;
+    const [x0, y0, w, h] = vb;
+    const lonMin = x0 / kx - 80, lonMax = (x0 + w) / kx - 80;
+    const latMax = 39.3 - y0 / ky, latMin = 39.3 - (y0 + h) / ky;
+    for (let lo = Math.ceil(lonMin / g) * g; lo <= lonMax; lo += g) {
+      const x = (lo + 80) * kx;
+      lines.push(`<line x1="${x}" y1="${y0}" x2="${x}" y2="${y0 + h}" stroke="var(--line)" stroke-width="${unit}"/>`);
+    }
+    for (let la = Math.ceil(latMin / g) * g; la <= latMax; la += g) {
+      const y = (39.3 - la) * ky;
+      lines.push(`<line x1="${x0}" y1="${y}" x2="${x0 + w}" y2="${y}" stroke="var(--line)" stroke-width="${unit}"/>`);
+    }
+    return lines.join("");
+  })();
+
+  const active = new Set(visibleDays(state.day).map(d => d.id));
+  const routes = days.map(d => {
+    const on = active.has(d.id);
+    return `<path d="${pathD(d.pts)}" fill="none" stroke="var(--card)" stroke-width="${unit * 7}" stroke-linejoin="round" stroke-linecap="round" opacity="${on ? 1 : 0.5}"/>
+      <path d="${pathD(d.pts)}" fill="none" stroke="${DAY_COLOR[d.id]}" stroke-width="${unit * (on ? 4 : 2.5)}" stroke-linejoin="round" stroke-linecap="round" opacity="${on ? 1 : 0.35}"/>`;
+  }).join("");
+
+  const hi = step ? `<path d="${pathD(ptsBetween(step.day, step.a, step.b))}" fill="none" stroke="var(--blaze)" stroke-width="${unit * 7}" stroke-linejoin="round" stroke-linecap="round"/>` : "";
+
+  const towns = DATA.towns.map(t => {
+    const [x, y] = px(t.lat, t.lon);
+    const fs = unit * 12;
+    return `<g><circle cx="${x}" cy="${y}" r="${unit * 2.5}" fill="var(--ink)"/><text x="${x + unit * 6}" y="${y - unit * 5}" font-size="${fs}" font-family="Source Sans 3, system-ui, sans-serif" font-weight="700" fill="var(--ink)" stroke="var(--wash)" stroke-width="${unit * 3}" paint-order="stroke">${esc(t.name)}</text></g>`;
+  }).join("");
+
+  const stops = stopsFor(state.day === "thu" ? "all" : state.day).filter(s => s.kind !== "sight" || state.day !== "all").map(s => {
+    const k = KIND[s.kind];
+    const [x, y] = px(s.lat, s.lon);
+    const r = unit * 9;
+    return `<g><title>${esc(s.name)} · ${dayById[s.day].label} mi ${mi(s.mi)}</title><circle cx="${x}" cy="${y}" r="${r}" fill="${k.c}" stroke="var(--card)" stroke-width="${unit * 2}"/><text x="${x}" y="${y + unit * 4}" text-anchor="middle" font-size="${unit * 11}" font-family="JetBrains Mono, monospace" fill="var(--onmark)">${k.g}</text></g>`;
+  }).join("");
+
+  const hov = (() => {
+    if (state.hover == null) return "";
+    const p = state.hover.p;
+    const [x, y] = px(p[0], p[1]);
+    return `<circle cx="${x}" cy="${y}" r="${unit * 7}" fill="var(--blaze)" stroke="var(--card)" stroke-width="${unit * 3}"/>`;
+  })();
+
+  const scaleKm = vb[2] / 5;
+  const nice = [1, 2, 5, 10, 20].map(m => m * 1.609).reduce((best, v) => Math.abs(v - scaleKm) < Math.abs(best - scaleKm) ? v : best);
+  const sx = vb[0] + unit * 16, sy = vb[1] + vb[3] - unit * 18;
+  const scale = `<g><line x1="${sx}" y1="${sy}" x2="${sx + nice}" y2="${sy}" stroke="var(--ink)" stroke-width="${unit * 3}"/><text x="${sx}" y="${sy - unit * 7}" font-size="${unit * 11}" font-family="JetBrains Mono, monospace" fill="var(--muted)">${Math.round(nice / 1.609)} mi</text></g>`;
+
+  svg.innerHTML = `<rect x="${vb[0]}" y="${vb[1]}" width="${vb[2]}" height="${vb[3]}" fill="var(--wash)"/>${grid}${routes}${hi}${towns}${stops}${hov}${scale}`;
+}
+
+function profileSeries() {
+  const ds = visibleDays(state.day);
+  const startOffset = ds.length === 1 ? 0 : 0;
+  return ds.map(d => ({ d, off: ds.length === 1 ? startOffset : dayById[d.id].offset }));
+}
+
+function renderProfile() {
+  const svg = document.getElementById("prof");
+  const W = Math.max(svg.getBoundingClientRect().width || 600, 300), H = 150;
+  const pad = { l: 44, r: 10, t: 10, b: 22 };
+  const series = profileSeries();
+  const xMax = series.reduce((m, s) => Math.max(m, s.off + s.d.miles), 0);
+  const eMin = 1500, eMax = 4100;
+  const X = m => pad.l + (m / xMax) * (W - pad.l - pad.r);
+  const Y = e => pad.t + (1 - (e - eMin) / (eMax - eMin)) * (H - pad.t - pad.b);
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+
+  const yt = [2000, 3000, 4000].map(e => `<line x1="${pad.l}" x2="${W - pad.r}" y1="${Y(e)}" y2="${Y(e)}" stroke="var(--line)"/><text x="${pad.l - 6}" y="${Y(e) + 4}" text-anchor="end" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--muted)">${e / 1000}k ft</text>`).join("");
+  const tick = xMax > 80 ? 20 : 10;
+  const xt = Array.from({ length: Math.floor(xMax / tick) + 1 }, (_, k) => k * tick).map(m => `<text x="${X(m)}" y="${H - 6}" text-anchor="middle" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--muted)">${m}</text>`).join("");
+
+  const step = state.step != null ? DATA.steps[state.step] : null;
+  const band = step && series.some(s => s.d.id === step.day) ? (() => {
+    const off = series.find(s => s.d.id === step.day).off;
+    const x1 = X(off + step.a), x2 = X(off + Math.max(step.b, step.a + 0.15));
+    return `<rect x="${x1}" y="${pad.t}" width="${Math.max(x2 - x1, 2)}" height="${H - pad.t - pad.b}" fill="var(--blaze)" opacity=".16"/>`;
+  })() : "";
+
+  const areas = series.map(({ d, off }) => {
+    const line = d.pts.map((p, k) => `${k ? "L" : "M"}${X(off + p[3]).toFixed(1)} ${Y(p[2]).toFixed(1)}`).join("");
+    const area = `${line}L${X(off + d.miles).toFixed(1)} ${Y(eMin)}L${X(off).toFixed(1)} ${Y(eMin)}Z`;
+    return `<path d="${area}" fill="${DAY_COLOR[d.id]}" opacity=".18"/><path d="${line}" fill="none" stroke="${DAY_COLOR[d.id]}" stroke-width="2"/>`;
+  }).join("");
+
+  const marks = series.flatMap(({ d, off }) => DATA.stops.filter(s => s.day === d.id && s.kind !== "sight").map(s => {
+    const k = KIND[s.kind];
+    return `<circle cx="${X(off + s.mi)}" cy="${pad.t + 7}" r="6" fill="${k.c}"/><text x="${X(off + s.mi)}" y="${pad.t + 10.5}" text-anchor="middle" font-size="8.5" font-family="JetBrains Mono, monospace" fill="var(--onmark)">${k.g}</text>`;
+  })).join("");
+
+  const hov = state.hover ? `<line x1="${X(state.hover.x)}" x2="${X(state.hover.x)}" y1="${pad.t}" y2="${H - pad.b}" stroke="var(--ink)" stroke-dasharray="3 3"/><circle cx="${X(state.hover.x)}" cy="${Y(state.hover.p[2])}" r="4" fill="var(--blaze)"/>` : "";
+
+  svg.innerHTML = `<rect width="${W}" height="${H}" fill="var(--card)"/>${yt}${band}${areas}${marks}${xt}${hov}`;
+  svg.dataset.w = W;
+  svg.dataset.xmax = xMax;
+  svg.dataset.padl = pad.l;
+  svg.dataset.padr = pad.r;
+
+  const label = state.day === "all" || state.day === "thu" ? "Elevation, whole trip (trip miles)" : `Elevation, ${dayById[state.day].label} (day miles)`;
+  document.getElementById("proftitle").textContent = label;
+  document.getElementById("readout").textContent = state.hover
+    ? `${state.hover.label} · ${fmt(state.hover.p[2])} ft`
+    : "Hover or drag for mile and elevation";
+}
+
+function hoverAt(clientX) {
+  const svg = document.getElementById("prof");
+  const r = svg.getBoundingClientRect();
+  const W = +svg.dataset.w, xMax = +svg.dataset.xmax, pl = +svg.dataset.padl, pr = +svg.dataset.padr;
+  const xPx = (clientX - r.left) * (W / r.width);
+  const m = Math.min(Math.max((xPx - pl) / (W - pl - pr) * xMax, 0), xMax);
+  const series = profileSeries();
+  const s = series.find(s => m >= s.off && m <= s.off + s.d.miles) || series[series.length - 1];
+  const local = m - s.off;
+  const p = s.d.pts.reduce((best, q) => Math.abs(q[3] - local) < Math.abs(best[3] - local) ? q : best);
+  const label = series.length === 1 ? `${s.d.label} mi ${mi(local)}` : `Trip mi ${mi(m)} (${s.d.label} mi ${mi(local)})`;
+  setState({ hover: { x: s.off + p[3], p, label } });
+}
+
+function stopHtml(s) {
+  const k = KIND[s.kind];
+  const off = s.off >= 0.15 ? ` · ${mi(s.off)} mi off route` : "";
+  const opts = s.options.length ? `<ul class="opts">${s.options.map(o => `<li><b>${esc(o.name)}</b><span>${esc(o.detail)}</span></li>`).join("")}</ul>` : "";
+  return `<li class="stop ${s.kind}"><div class="mp"><span class="glyph" style="--c:${k.c}" aria-label="${k.label}">${k.g}</span></div><div><h4>${esc(s.name)}<small>mi ${mi(s.mi)}${off}</small></h4><p>${esc(s.note)}</p>${opts}</div></li>`;
+}
+
+function stepHtml(s) {
+  const dist = s.b - s.a;
+  const nums = dist > 0.05
+    ? `<span class="chip num">${mi(dist)} mi</span>${s.gain ? `<span class="chip num">+${fmt(s.gain)} ft</span>` : ""}${s.loss ? `<span class="chip num">−${fmt(s.loss)} ft</span>` : ""}`
+    : "";
+  return `<li class="step" data-step="${s.i}" tabindex="0" aria-current="${state.step === s.i}">
+    <div class="mp"><b>${mi(s.a)}</b>${dist > 0.05 ? `to ${mi(s.b)}` : ""}</div>
+    <div><h3>${esc(s.title)}</h3>
+      <div class="meta"><span class="chip surface">${esc(s.surface)}</span><span class="chip">${esc(s.road)}</span>${nums}</div>
+      <p>${esc(s.body)}</p>
+      <a class="gm" href="${gmaps(s.lat, s.lon)}" target="_blank" rel="noopener">Open start point in Google Maps ↗</a>
+    </div></li>`;
+}
+
+function dayBlock(d) {
+  const items = [
+    ...DATA.steps.map((s, i) => ({ ...s, i })).filter(s => s.day === d.id).map(s => ({ at: s.a, ord: 0, html: stepHtml(s) })),
+    ...DATA.stops.filter(s => s.day === d.id).map(s => ({ at: s.mi, ord: 1, html: stopHtml(s) })),
+  ].sort((x, y) => x.at - y.at || x.ord - y.ord);
+  const camps = { fri: "Night: Blackwater Falls SP campground, Canaan Valley SP or a motel in Davis/Thomas.", sat: "Night: back at the car. Drive up to Bear Heaven.", sun: "Finish at the car, then drive home to Dayton." };
+  return `<div class="dayhead" style="--c:${DAY_COLOR[d.id]}">
+      <div class="eyebrow">${d.label} · trip mi ${mi(dayById[d.id].offset)} to ${mi(dayById[d.id].offset + d.miles)}</div>
+      <h2>${esc(d.title)}</h2>
+      <p>Via ${esc(d.via)}</p>
+      <div class="nums"><span><b>${mi(d.miles)}</b> mi</span><span><b>+${fmt(d.gain)}</b> ft</span><span><b>−${fmt(d.loss)}</b> ft</span></div>
+      <p>${camps[d.id]}</p>
+    </div>
+    <ol class="steps">${items.map(x => x.html).join("")}</ol>`;
+}
+
+function thuBlock() {
+  return `<div class="drive">
+    <div class="eyebrow">Thursday · drive day</div>
+    <h2 style="margin:0;font:700 26px/1.1 var(--display)">Dayton to Bear Heaven</h2>
+    <ol>
+      <li>Leave Dayton, OH and head southeast toward Point Pleasant, WV.</li>
+      <li>Stop at the Mothman Statue in downtown Point Pleasant.</li>
+      <li>Continue east to Elkins, then US-33 east to the top of Shavers Mountain (Alpena Gap).</li>
+      <li>Turn left onto FR 91 (Stuart Memorial Dr) and go about 3 mi to Bear Heaven Campground on the left. First come first served, about $5, no water.</li>
+      <li>Friday morning, drive back down to the Alpena lot (about 4 mi) to start riding.</li>
+    </ol>
+    <a class="btn" href="${DRIVE_URL}" target="_blank" rel="noopener">Open driving directions in Google Maps ↗</a>
+  </div>`;
+}
+
+function renderDirections() {
+  const el = document.getElementById("dir");
+  el.innerHTML = state.day === "thu"
+    ? thuBlock()
+    : state.day === "all"
+      ? thuBlock() + days.map(dayBlock).join("")
+      : dayBlock(dayById[state.day]);
+}
+
+function renderFoodTable() {
+  const rows = DATA.stops.filter(s => s.kind === "food" || s.kind === "water" || s.kind === "park").map(s => {
+    const d = dayById[s.day];
+    const opts = s.options.length ? s.options.map(o => esc(o.name)).join(", ") : esc(s.note);
+    return `<tr><td>${d.label}</td><td class="mi">${mi(s.mi)}</td><td class="mi">${mi(d.offset + s.mi)}</td><td><b>${esc(s.name)}</b></td><td>${opts}</td></tr>`;
+  }).join("");
+  const gaps = `<tr><td>Sat</td><td class="mi">0 to 50.6</td><td class="mi">51.0 to 101.6</td><td><b>No confirmed food</b></td><td>Pack the day's food in Davis. Canaan Valley SP is about 1 mi off route near mi 28 (not researched).</td></tr>
+    <tr><td>Sun</td><td class="mi">0 to 55.7</td><td class="mi">101.6 to 157.4</td><td><b>No food on route</b></td><td>Carry everything from the car. Durbin (Big Al's, Station 2) is about 4 mi off route from Burner.</td></tr>`;
+  document.getElementById("foodtable").innerHTML = `<thead><tr><th>Day</th><th>Day mi</th><th>Trip mi</th><th>Stop</th><th>Options</th></tr></thead><tbody>${rows}${gaps}</tbody>`;
+}
+
+function render() {
+  document.querySelectorAll("nav.days button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.day === state.day)));
+  renderMap();
+  renderProfile();
+}
+
+function renderAll() {
+  renderDirections();
+  render();
+}
+
+function init() {
+  renderFacts();
+  renderNav();
+  renderLegend();
+  renderFoodTable();
+  renderAll();
+
+  document.getElementById("days").addEventListener("click", e => {
+    const b = e.target.closest("button[data-day]");
+    if (!b) return;
+    state = { ...state, day: b.dataset.day, step: null, hover: null };
+    writeStore(state.day);
+    history.replaceState(null, "", `#${state.day}`);
+    renderAll();
+  });
+
+  const pick = e => {
+    const li = e.target.closest(".step");
+    if (!li || e.target.closest("a")) return;
+    const i = +li.dataset.step;
+    state = { ...state, step: state.step === i ? null : i, hover: null };
+    document.querySelectorAll(".step").forEach(n => n.setAttribute("aria-current", String(+n.dataset.step === state.step)));
+    render();
+    if (window.matchMedia("(max-width: 880px)").matches && state.step != null) {
+      document.getElementById("map").scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    }
+  };
+  const dir = document.getElementById("dir");
+  dir.addEventListener("click", pick);
+  dir.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(e); } });
+
+  const prof = document.getElementById("prof");
+  prof.addEventListener("pointermove", e => hoverAt(e.clientX));
+  prof.addEventListener("pointerdown", e => { prof.setPointerCapture(e.pointerId); hoverAt(e.clientX); });
+  prof.addEventListener("pointerleave", () => setState({ hover: null }));
+
+  let t;
+  window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(render, 120); });
+}
+
+init();
+</script>
