@@ -4,6 +4,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
 <style>
+__LEAFLET_CSS__
+</style>
+<style>
 :root {
   --bg: #f2f4ef;
   --card: #ffffff;
@@ -73,7 +76,24 @@ nav.days button[aria-pressed="true"] { border-color: var(--ink); box-shadow: ins
 .split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
 .mapcol { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); display: grid; gap: 12px; min-width: 0; }
 .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-#map { display: block; width: 100%; aspect-ratio: 4 / 3.4; max-width: 100%; background: var(--wash); touch-action: manipulation; }
+#map { display: block; width: 100%; aspect-ratio: 4 / 3.4; max-width: 100%; background: var(--wash); z-index: 0; }
+#map.leaflet-container { font: 13px/1.4 var(--body); background: var(--wash); }
+.rt { stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.rt-fri { stroke: var(--fri); }
+.rt-sat { stroke: var(--sat); }
+.rt-sun { stroke: var(--sun); }
+.rt-casing { stroke: #ffffff; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.rt-hi { stroke: var(--blaze); stroke-opacity: .85; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.hoverdot { fill: var(--blaze); fill-opacity: 1; stroke: #ffffff; stroke-width: 3; }
+.mapglyph { width: 24px; height: 24px; box-shadow: 0 0 0 2px #ffffff, 0 1px 4px rgba(0,0,0,.35); }
+.townlabel span { font: 700 13px/1 var(--body); color: var(--ink); white-space: nowrap; text-shadow: 0 0 3px var(--wash), 0 0 3px var(--wash), 0 0 3px var(--wash); }
+#map .leaflet-popup-content-wrapper, #map .leaflet-popup-tip, #map .leaflet-tooltip { background: var(--card); color: var(--ink); }
+#map .leaflet-tooltip { border-color: var(--line); }
+#map .leaflet-control-layers, #map .leaflet-bar a { background: var(--card); color: var(--ink); border-color: var(--line); }
+#map .leaflet-control-layers-toggle { width: auto; height: auto; padding: 6px 10px; background-image: none; font: 600 13px/1 var(--body); color: var(--ink); text-decoration: none; }
+#map .leaflet-control-layers-toggle::after { content: "Map style"; }
+#map .leaflet-control-attribution { background: color-mix(in srgb, var(--card) 85%, transparent); color: var(--muted); }
+#map .leaflet-control-attribution a { color: var(--ink); }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { display: inline-block; width: 18px; height: 4px; border-radius: 2px; background: var(--c); }
@@ -164,7 +184,7 @@ footer p { margin: 0; }
   <div class="split">
     <section class="mapcol" aria-label="Map and elevation">
       <div class="panel">
-        <svg id="map" role="img" aria-label="Route map"></svg>
+        <div id="map" role="region" aria-label="Route map"></div>
         <div class="legend" id="legend"></div>
       </div>
       <div class="panel profwrap">
@@ -198,6 +218,7 @@ footer p { margin: 0; }
   </footer>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
 const DATA = __DATA__;
 
@@ -216,11 +237,6 @@ const offsets = days.reduce((acc, d, i) => [...acc, i === 0 ? 0 : acc[i - 1] + d
 const dayById = Object.fromEntries(days.map((d, i) => [d.id, { ...d, offset: offsets[i] }]));
 const totalMiles = days.reduce((s, d) => s + d.miles, 0);
 const totalGain = days.reduce((s, d) => s + d.gain, 0);
-
-const lat0 = 38.9;
-const kx = Math.cos(lat0 * Math.PI / 180) * 111.32;
-const ky = 110.57;
-const px = (lat, lon) => [(lon + 80) * kx, (39.3 - lat) * ky];
 
 const fmt = n => n.toLocaleString("en-US");
 const mi = n => n.toFixed(1);
@@ -241,23 +257,6 @@ const setState = patch => { state = { ...state, ...patch }; render(); };
 const stepsFor = id => DATA.steps.map((s, i) => ({ ...s, i })).filter(s => id === "all" || s.day === id);
 const stopsFor = id => DATA.stops.filter(s => id === "all" || s.day === id);
 const visibleDays = id => (id === "all" || id === "thu") ? days : [dayById[id]];
-
-const ptsBetween = (dayId, a, b) => dayById[dayId].pts.filter(p => p[3] >= a - 0.03 && p[3] <= b + 0.03);
-
-const bbox = pts => pts.reduce((bb, [la, lo]) => {
-  const [x, y] = px(la, lo);
-  return [Math.min(bb[0], x), Math.min(bb[1], y), Math.max(bb[2], x), Math.max(bb[3], y)];
-}, [Infinity, Infinity, -Infinity, -Infinity]);
-
-const fitBox = (bb, aspect, padFrac, minSpan) => {
-  const cx = (bb[0] + bb[2]) / 2, cy = (bb[1] + bb[3]) / 2;
-  const w0 = Math.max(bb[2] - bb[0], minSpan) * (1 + padFrac);
-  const h0 = Math.max(bb[3] - bb[1], minSpan) * (1 + padFrac);
-  const [w, h] = w0 / h0 > aspect ? [w0, w0 / aspect] : [h0 * aspect, h0];
-  return [cx - w / 2, cy - h / 2, w, h];
-};
-
-const pathD = pts => pts.map(([la, lo], k) => { const [x, y] = px(la, lo); return `${k ? "L" : "M"}${x.toFixed(2)} ${y.toFixed(2)}`; }).join("");
 
 function renderFacts() {
   const items = [
@@ -285,70 +284,90 @@ function renderLegend() {
   document.getElementById("legend").innerHTML = lines + kinds;
 }
 
-function renderMap() {
-  const svg = document.getElementById("map");
-  const rect = svg.getBoundingClientRect();
-  const aspect = rect.width && rect.height ? rect.width / rect.height : 4 / 3.4;
-  const step = state.step != null ? DATA.steps[state.step] : null;
-  const focusPts = step
-    ? ptsBetween(step.day, step.a, Math.max(step.b, step.a + 0.5))
-    : visibleDays(state.day).flatMap(d => d.pts);
-  const vb = fitBox(bbox(focusPts), aspect, step ? 0.9 : 0.12, step ? 3 : 5);
-  const unit = vb[2] / Math.max(rect.width || 600, 1);
-  svg.setAttribute("viewBox", vb.map(v => v.toFixed(2)).join(" "));
+const lineBetween = (dayId, a, b) => dayById[dayId].line.filter(p => p[2] >= a - 0.02 && p[2] <= b + 0.02).map(p => [p[0], p[1]]);
 
-  const grid = (() => {
-    const lines = [];
-    const g = 0.05;
-    const [x0, y0, w, h] = vb;
-    const lonMin = x0 / kx - 80, lonMax = (x0 + w) / kx - 80;
-    const latMax = 39.3 - y0 / ky, latMin = 39.3 - (y0 + h) / ky;
-    for (let lo = Math.ceil(lonMin / g) * g; lo <= lonMax; lo += g) {
-      const x = (lo + 80) * kx;
-      lines.push(`<line x1="${x}" y1="${y0}" x2="${x}" y2="${y0 + h}" stroke="var(--line)" stroke-width="${unit}"/>`);
-    }
-    for (let la = Math.ceil(latMin / g) * g; la <= latMax; la += g) {
-      const y = (39.3 - la) * ky;
-      lines.push(`<line x1="${x0}" y1="${y}" x2="${x0 + w}" y2="${y}" stroke="var(--line)" stroke-width="${unit}"/>`);
-    }
-    return lines.join("");
-  })();
+const TILE_LAYERS = {
+  Topo: () => L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+    maxZoom: 17, subdomains: "abc",
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, SRTM | Style &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)',
+  }),
+  Streets: () => L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }),
+  Satellite: () => L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 19,
+    attribution: "Imagery &copy; Esri, Maxar, Earthstar Geographics",
+  }),
+};
 
-  const active = new Set(visibleDays(state.day).map(d => d.id));
-  const routes = days.map(d => {
-    const on = active.has(d.id);
-    return `<path d="${pathD(d.pts)}" fill="none" stroke="var(--card)" stroke-width="${unit * 7}" stroke-linejoin="round" stroke-linecap="round" opacity="${on ? 1 : 0.5}"/>
-      <path d="${pathD(d.pts)}" fill="none" stroke="${DAY_COLOR[d.id]}" stroke-width="${unit * (on ? 4 : 2.5)}" stroke-linejoin="round" stroke-linecap="round" opacity="${on ? 1 : 0.35}"/>`;
-  }).join("");
+const glyphIcon = k => L.divIcon({
+  className: "",
+  html: `<span class="glyph mapglyph" style="--c:${k.c}">${k.g}</span>`,
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
+  tooltipAnchor: [12, 0],
+});
 
-  const hi = step ? `<path d="${pathD(ptsBetween(step.day, step.a, step.b))}" fill="none" stroke="var(--blaze)" stroke-width="${unit * 7}" stroke-linejoin="round" stroke-linecap="round"/>` : "";
+const townIcon = name => L.divIcon({ className: "townlabel", html: `<span>${esc(name)}</span>`, iconSize: null, iconAnchor: [-4, 18] });
 
-  const towns = DATA.towns.map(t => {
-    const [x, y] = px(t.lat, t.lon);
-    const fs = unit * 12;
-    return `<g><circle cx="${x}" cy="${y}" r="${unit * 2.5}" fill="var(--ink)"/><text x="${x + unit * 6}" y="${y - unit * 5}" font-size="${fs}" font-family="Source Sans 3, system-ui, sans-serif" font-weight="700" fill="var(--ink)" stroke="var(--wash)" stroke-width="${unit * 3}" paint-order="stroke">${esc(t.name)}</text></g>`;
-  }).join("");
+const mapView = (() => {
+  if (typeof L === "undefined") return null;
+  const el = document.getElementById("map");
+  const map = L.map(el, { scrollWheelZoom: false, zoomSnap: 0.25, attributionControl: true });
+  const bases = Object.fromEntries(Object.entries(TILE_LAYERS).map(([k, f]) => [k, f()]));
+  bases.Topo.addTo(map);
+  const towns = L.layerGroup(DATA.towns.map(t => L.marker([t.lat, t.lon], { icon: townIcon(t.name), interactive: false })));
+  let tileFail = 0;
+  Object.values(bases).forEach(b => b.on("tileerror", () => {
+    tileFail += 1;
+    if (tileFail === 4) { el.classList.add("notiles"); towns.addTo(map); }
+  }));
+  L.control.layers(bases, null, { collapsed: true, position: "topright" }).addTo(map);
+  L.control.scale({ imperial: true, metric: false }).addTo(map);
 
-  const stops = stopsFor(state.day === "thu" ? "all" : state.day).filter(s => s.kind !== "sight" || state.day !== "all").map(s => {
+  const routes = Object.fromEntries(days.map(d => {
+    const ll = d.line.map(p => [p[0], p[1]]);
+    const casing = L.polyline(ll, { className: "rt-casing", weight: 8, interactive: false }).addTo(map);
+    const line = L.polyline(ll, { className: `rt rt-${d.id}`, weight: 4.5, interactive: false }).addTo(map);
+    return [d.id, { casing, line }];
+  }));
+  const highlight = L.polyline([], { className: "rt-hi", weight: 8, interactive: false }).addTo(map);
+  const stops = L.layerGroup(DATA.stops.map(s => {
     const k = KIND[s.kind];
-    const [x, y] = px(s.lat, s.lon);
-    const r = unit * 9;
-    return `<g><title>${esc(s.name)} · ${dayById[s.day].label} mi ${mi(s.mi)}</title><circle cx="${x}" cy="${y}" r="${r}" fill="${k.c}" stroke="var(--card)" stroke-width="${unit * 2}"/><text x="${x}" y="${y + unit * 4}" text-anchor="middle" font-size="${unit * 11}" font-family="JetBrains Mono, monospace" fill="var(--onmark)">${k.g}</text></g>`;
-  }).join("");
+    return L.marker([s.lat, s.lon], { icon: glyphIcon(k), keyboard: false })
+      .bindTooltip(`<b>${esc(s.name)}</b><br>${dayById[s.day].label} mi ${mi(s.mi)}`, { direction: "right" })
+      .bindPopup(`<b>${esc(s.name)}</b><br><span class="mono">${dayById[s.day].label} mi ${mi(s.mi)}</span><br>${esc(s.note)}`);
+  })).addTo(map);
+  const hover = L.circleMarker([0, 0], { radius: 7, className: "hoverdot", interactive: false });
+  return { map, routes, highlight, stops, hover, key: null };
+})();
 
-  const hov = (() => {
-    if (state.hover == null) return "";
-    const p = state.hover.p;
-    const [x, y] = px(p[0], p[1]);
-    return `<circle cx="${x}" cy="${y}" r="${unit * 7}" fill="var(--blaze)" stroke="var(--card)" stroke-width="${unit * 3}"/>`;
-  })();
-
-  const scaleKm = vb[2] / 5;
-  const nice = [1, 2, 5, 10, 20].map(m => m * 1.609).reduce((best, v) => Math.abs(v - scaleKm) < Math.abs(best - scaleKm) ? v : best);
-  const sx = vb[0] + unit * 16, sy = vb[1] + vb[3] - unit * 18;
-  const scale = `<g><line x1="${sx}" y1="${sy}" x2="${sx + nice}" y2="${sy}" stroke="var(--ink)" stroke-width="${unit * 3}"/><text x="${sx}" y="${sy - unit * 7}" font-size="${unit * 11}" font-family="JetBrains Mono, monospace" fill="var(--muted)">${Math.round(nice / 1.609)} mi</text></g>`;
-
-  svg.innerHTML = `<rect x="${vb[0]}" y="${vb[1]}" width="${vb[2]}" height="${vb[3]}" fill="var(--wash)"/>${grid}${routes}${hi}${towns}${stops}${hov}${scale}`;
+function renderMap() {
+  if (!mapView) return;
+  const { map, routes, highlight, hover } = mapView;
+  const step = state.step != null ? DATA.steps[state.step] : null;
+  const active = new Set(visibleDays(state.day).map(d => d.id));
+  days.forEach(d => {
+    const on = active.has(d.id);
+    routes[d.id].line.setStyle({ opacity: on ? 1 : 0.35, weight: on ? 4.5 : 3 });
+    routes[d.id].casing.setStyle({ opacity: on ? 0.9 : 0.3 });
+  });
+  highlight.setLatLngs(step ? lineBetween(step.day, step.a, Math.max(step.b, step.a + 0.05)) : []);
+  if (state.hover) {
+    hover.setLatLng([state.hover.p[0], state.hover.p[1]]);
+    if (!map.hasLayer(hover)) hover.addTo(map);
+  } else if (map.hasLayer(hover)) {
+    hover.remove();
+  }
+  const key = `${state.day}|${state.step}`;
+  if (key === mapView.key) return;
+  mapView.key = key;
+  const focus = step
+    ? lineBetween(step.day, step.a, Math.max(step.b, step.a + 0.6))
+    : visibleDays(state.day).flatMap(d => d.line.map(p => [p[0], p[1]]));
+  map.invalidateSize();
+  map.fitBounds(L.latLngBounds(focus), { padding: [28, 28], maxZoom: step ? 15 : 13, animate: mapView.key !== null });
 }
 
 function profileSeries() {

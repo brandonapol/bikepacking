@@ -11,7 +11,7 @@ The goal was to merge two bikepacking.com routes into one loop that starts and e
 | `wv-canaan-westfork-loop-by-day.gpx` | The same line split into 3 tracks (Fri/Sat/Sun) plus the same waypoints. Use this for **onX Backcountry**: each day shows up as its own line. |
 | `source/` | The original GPX files: [Canaan Valley & Forks of Cheat](https://bikepacking.com/wp-content/uploads/2021/02/Canaan-Valley-and-the-Forks-of-Cheat-bikepacking-route.gpx) ([RWGPS 35116010](https://ridewithgps.com/routes/35116010)) and [West Fork Weekender](https://bikepacking.com/wp-content/uploads/2020/12/West-Fork-Weekender-Bikepacking-Route.gpx) ([RWGPS 34771169](https://ridewithgps.com/routes/34771169)). |
 | `scripts/build.py` | Rebuilds both GPX outputs: `python3 -I scripts/build.py scripts .` from this folder. |
-| `index.html`, `scripts/page.py`, `scripts/template.html` | The shareable trip page. Rebuild with `python3 -I scripts/page.py`. |
+| `../index.html`, `scripts/page.py`, `scripts/template.html` | The shareable trip page (Leaflet map) at the repo root for GitHub Pages. Rebuild with `python3 -I scripts/page.py` from this folder. |
 
 Both outputs are GPX 1.1 and pass an `xmllint` well-formedness check. Every waypoint's description starts with its day milepost.
 

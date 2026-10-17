@@ -43,6 +43,27 @@ def sample(pts):
     return out, d
 
 
+def simplify(pts, d, tol_m=6.0):
+    k = math.cos(math.radians(pts[0][0]))
+    xy = [(p[1] * 111320 * k, p[0] * 110570) for p in pts]
+    keep = {0, len(pts) - 1}
+    stack = [(0, len(pts) - 1)]
+    while stack:
+        a, b = stack.pop()
+        (ax, ay), (bx, by) = xy[a], xy[b]
+        dx, dy = bx - ax, by - ay
+        norm = math.hypot(dx, dy) or 1e-9
+        far, idx = 0.0, None
+        for i in range(a + 1, b):
+            dist = abs(dy * (xy[i][0] - ax) - dx * (xy[i][1] - ay)) / norm
+            if dist > far:
+                far, idx = dist, i
+        if idx is not None and far > tol_m:
+            keep.add(idx)
+            stack += [(a, idx), (idx, b)]
+    return [[round(pts[i][0], 5), round(pts[i][1], 5), round(d[i] * M2MI, 2)] for i in sorted(keep)]
+
+
 def slice_pts(pts, d, a, b):
     return [p for p, x in zip(pts, d) if a <= x * M2MI <= b]
 
@@ -180,7 +201,7 @@ def build():
     for meta, pts in zip(DAY_META, day_pts):
         smp, d = sample(pts)
         g, l = stats(pts, d, 0, 999)
-        days.append({**meta, "miles": round(d[-1] * M2MI, 1), "gain": g, "loss": l, "pts": smp})
+        days.append({**meta, "miles": round(d[-1] * M2MI, 1), "gain": g, "loss": l, "pts": smp, "line": simplify(pts, d)})
         for a, b, title, road, surface, body in STEPS[meta["id"]]:
             sg, sl = stats(pts, d, a, b)
             p = at(pts, d, a)
@@ -199,11 +220,12 @@ def build():
 
 def main():
     template = (ROOT / "scripts/template.html").read_text()
-    body = template.replace("__DATA__", json.dumps(build(), separators=(",", ":")))
+    leaflet_css = (ROOT / "scripts/vendor/leaflet-1.9.4.css").read_text()
+    body = template.replace("__LEAFLET_CSS__", leaflet_css).replace("__DATA__", json.dumps(build(), separators=(",", ":")))
     out_fragment = Path(sys.argv[1]) if len(sys.argv) > 1 else None
     if out_fragment:
         out_fragment.write_text(body)
-    (ROOT / "index.html").write_text(
+    (ROOT.parent / "index.html").write_text(
         '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
         "</head>\n<body>\n" + body + "\n</body>\n</html>\n"
