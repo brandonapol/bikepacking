@@ -15,14 +15,14 @@
   </wpt>
   <wpt lat="39.007200" lon="-79.549100">
     <name>Gladwin Dispersed Camping</name>
-    <cmt>Day 2 mi 37.5 / trip mi 88.5. Free MNF dispersed, Glady Fork / Dry Fork confluence, Gladwin Rd (CR 12). No facilities, pack it out. Filter water.</cmt>
-    <desc>Day 2 mi 37.5 / trip mi 88.5. Free MNF dispersed, Glady Fork / Dry Fork confluence, Gladwin Rd (CR 12). No facilities, pack it out. Filter water.</desc>
+    <cmt>Day 2 mi 31.4 / trip mi 88.5. Free MNF dispersed, Glady Fork / Dry Fork confluence, Gladwin Rd (CR 12). No facilities, pack it out. Filter water.</cmt>
+    <desc>Day 2 mi 31.4 / trip mi 88.5. Free MNF dispersed, Glady Fork / Dry Fork confluence, Gladwin Rd (CR 12). No facilities, pack it out. Filter water.</desc>
     <sym>Campground</sym>
   </wpt>
   <wpt lat="38.978178" lon="-79.590459">
     <name>Lower Glady Dispersed Camping (FR 162)</name>
-    <cmt>Day 2 mi 40.8 / trip mi 91.8 (1.2 mi off route). MNF designated dispersed sites on Glady Fork near Milus TH. Coordinates differ by source (DispersedApp 38.978,-79.590; Campendium 38.964,-79.607); verify on MNF map. Filter/boil water (giardia reported).</cmt>
-    <desc>Day 2 mi 40.8 / trip mi 91.8 (1.2 mi off route). MNF designated dispersed sites on Glady Fork near Milus TH. Coordinates differ by source (DispersedApp 38.978,-79.590; Campendium 38.964,-79.607); verify on MNF map. Filter/boil water (giardia reported).</desc>
+    <cmt>Day 2 mi 34.8 / trip mi 91.8 (1.2 mi off route). MNF designated dispersed sites on Glady Fork near Milus TH. Coordinates differ by source (DispersedApp 38.978,-79.590; Campendium 38.964,-79.607); verify on MNF map. Filter/boil water (giardia reported).</cmt>
+    <desc>Day 2 mi 34.8 / trip mi 91.8 (1.2 mi off route). MNF designated dispersed sites on Glady Fork near Milus TH. Coordinates differ by source (DispersedApp 38.978,-79.590; Campendium 38.964,-79.607); verify on MNF map. Filter/boil water (giardia reported).</desc>
     <sym>Campground</sym>
   </wpt>
   <wpt lat="38.632427" lon="-79.761830">
@@ -63,14 +63,20 @@
   </wpt>
   <wpt lat="39.128840" lon="-79.463180">
     <name>Food: Davis</name>
-    <cmt>Day 1 mi 51.0 / trip mi 51.0. Davis: restaurants, grocery, Blackwater Bikes. End of Day 1 / start of Day 2.</cmt>
-    <desc>Day 1 mi 51.0 / trip mi 51.0. Davis: restaurants, grocery, Blackwater Bikes. End of Day 1 / start of Day 2.</desc>
+    <cmt>Day 1 mi 51.0 / trip mi 51.0. Davis: restaurants, breweries, Blackwater Bikes. Eat dinner and fill all water here before riding out to the Canaan Loop Rd camp.</cmt>
+    <desc>Day 1 mi 51.0 / trip mi 51.0. Davis: restaurants, breweries, Blackwater Bikes. Eat dinner and fill all water here before riding out to the Canaan Loop Rd camp.</desc>
     <sym>Restaurant</sym>
   </wpt>
   <wpt lat="39.116136" lon="-79.489139">
-    <name>Blackwater Falls SP Campground</name>
-    <cmt>Day 2 mi 1.8 / trip mi 52.8 (0.3 mi off route). State park campground (fee). Dispersed camping NOT allowed in state parks or on private land around Parsons-Thomas-Davis.</cmt>
-    <desc>Day 2 mi 1.8 / trip mi 52.8 (0.3 mi off route). State park campground (fee). Dispersed camping NOT allowed in state parks or on private land around Parsons-Thomas-Davis.</desc>
+    <name>Blackwater Falls SP Campground (backup)</name>
+    <cmt>Day 1 mi 52.8 / trip mi 52.8 (0.3 mi off route). Backup only: state park campground, around $50/night and nearly booked. Dispersed camping NOT allowed in the state park or on private land around Parsons-Thomas-Davis.</cmt>
+    <desc>Day 1 mi 52.8 / trip mi 52.8 (0.3 mi off route). Backup only: state park campground, around $50/night and nearly booked. Dispersed camping NOT allowed in the state park or on private land around Parsons-Thomas-Davis.</desc>
+    <sym>Campground</sym>
+  </wpt>
+  <wpt lat="39.095970" lon="-79.528310">
+    <name>Fri Camp: Canaan Loop Rd Dispersed</name>
+    <cmt>Day 1 mi 57.0 / trip mi 57.0. Free MNF dispersed camping 100+ ft off Canaan Loop Rd (FR 13). Target point only: confirm in onX that you are past the Blackwater Falls SP boundary, then pick any flat spot. No water, toilets or tables.</cmt>
+    <desc>Day 1 mi 57.0 / trip mi 57.0. Free MNF dispersed camping 100+ ft off Canaan Loop Rd (FR 13). Target point only: confirm in onX that you are past the Blackwater Falls SP boundary, then pick any flat spot. No water, toilets or tables.</desc>
     <sym>Campground</sym>
   </wpt>
   <wpt lat="38.934105" lon="-79.731492">

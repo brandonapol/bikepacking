@@ -204,7 +204,7 @@ footer p { margin: 0; }
     <h2>Good to know</h2>
     <section class="notes">
       <div class="note"><h3>No cell service</h3><p>Most of the route has none. Download offline maps in onX and Ride with GPS before leaving Dayton, and load the GPX on both phones.</p></div>
-      <div class="note"><h3>Camping rules</h3><p>Dispersed camping is fine on Monongahela NF land 100+ ft from roads, trails and rec sites. Not in state parks or on private land. Parsons, Thomas and Davis are mixed ownership, so Friday night means the Blackwater Falls SP campground, Canaan Valley SP or a motel.</p></div>
+      <div class="note"><h3>Camping rules</h3><p>Dispersed camping is fine on Monongahela NF land 100+ ft from roads, trails and rec sites. Not in state parks or on private land. Parsons, Thomas and Davis are mixed ownership, so Friday we ride about 6 mi past Davis onto Canaan Loop Rd, which is national forest land, and camp there for free. Blackwater Falls SP campground (around $50 and nearly full) is the backup.</p></div>
       <div class="note"><h3>Water</h3><p>Rivers everywhere on Friday and Saturday; filter it. On Sunday the Middle Mountain hand pump at mile 34.5 is the only potable water. Bear Heaven has none.</p></div>
       <div class="note"><h3>FR 209</h3><p>Not on this route. FR 209 runs off US-250 near Cheat Bridge, about 20 mi upstream of the Shavers Fork miles we ride. Its bridge closure ended Aug 14, 2025. Check MNF alerts for anything new.</p></div>
       <div class="note"><h3>Saturday night</h3><p>We end Saturday at the car. Bear Heaven is a 4 mi drive up FR 91, so drive up, camp, and drive back down Sunday morning.</p></div>
@@ -262,7 +262,7 @@ function renderFacts() {
   const items = [
     [`${mi(totalMiles)} mi`, "total distance"],
     [`+${fmt(totalGain)} ft`, "total climbing"],
-    ["3 days", "about 50 mi each"],
+    ["3 days", "45 to 57 mi a day"],
     ["Alpena", "start and finish, US-33"],
   ];
   document.getElementById("facts").innerHTML = items.map(([b, s]) => `<li><b>${b}</b><span>${s}</span></li>`).join("");
@@ -461,10 +461,10 @@ function stepHtml(s) {
 
 function dayBlock(d) {
   const items = [
-    ...DATA.steps.map((s, i) => ({ ...s, i })).filter(s => s.day === d.id).map(s => ({ at: s.a, ord: 0, html: stepHtml(s) })),
-    ...DATA.stops.filter(s => s.day === d.id).map(s => ({ at: s.mi, ord: 1, html: stopHtml(s) })),
+    ...DATA.steps.map((s, i) => ({ ...s, i })).filter(s => s.day === d.id).map(s => ({ at: s.a, ord: 1, html: stepHtml(s) })),
+    ...DATA.stops.filter(s => s.day === d.id).map(s => ({ at: s.mi, ord: 0, html: stopHtml(s) })),
   ].sort((x, y) => x.at - y.at || x.ord - y.ord);
-  const camps = { fri: "Night: Blackwater Falls SP campground, Canaan Valley SP or a motel in Davis/Thomas.", sat: "Night: back at the car. Drive up to Bear Heaven.", sun: "Finish at the car, then drive home to Dayton." };
+  const camps = { fri: "Night: free dispersed camping on Canaan Loop Rd, about 6 mi past Davis on national forest land. Fill water in Davis.", sat: "Night: back at the car. Drive up to Bear Heaven.", sun: "Finish at the car, then drive home to Dayton." };
   return `<div class="dayhead" style="--c:${DAY_COLOR[d.id]}">
       <div class="eyebrow">${d.label} · trip mi ${mi(dayById[d.id].offset)} to ${mi(dayById[d.id].offset + d.miles)}</div>
       <h2>${esc(d.title)}</h2>
@@ -505,8 +505,8 @@ function renderFoodTable() {
     const opts = s.options.length ? s.options.map(o => esc(o.name)).join(", ") : esc(s.note);
     return `<tr><td>${d.label}</td><td class="mi">${mi(s.mi)}</td><td class="mi">${mi(d.offset + s.mi)}</td><td><b>${esc(s.name)}</b></td><td>${opts}</td></tr>`;
   }).join("");
-  const gaps = `<tr><td>Sat</td><td class="mi">0 to 50.6</td><td class="mi">51.0 to 101.6</td><td><b>No confirmed food</b></td><td>Pack the day's food in Davis. Canaan Valley SP is about 1 mi off route near mi 28 (not researched).</td></tr>
-    <tr><td>Sun</td><td class="mi">0 to 55.7</td><td class="mi">101.6 to 157.4</td><td><b>No food on route</b></td><td>Carry everything from the car. Durbin (Big Al's, Station 2) is about 4 mi off route from Burner.</td></tr>`;
+  const gaps = `<tr><td>Sat</td><td class="mi">0 to ${mi(dayById.sat.miles)}</td><td class="mi">${mi(dayById.sat.offset)} to ${mi(dayById.sat.offset + dayById.sat.miles)}</td><td><b>No confirmed food</b></td><td>Buy Saturday's food in Davis on Friday night. Canaan Valley SP is about 1 mi off route near Sat mi ${mi(DATA.stops.find(s => s.name === "Canaan Valley State Park").mi)} (not researched).</td></tr>
+    <tr><td>Sun</td><td class="mi">0 to ${mi(dayById.sun.miles)}</td><td class="mi">${mi(dayById.sun.offset)} to ${mi(dayById.sun.offset + dayById.sun.miles)}</td><td><b>No food on route</b></td><td>Carry everything from the car. Durbin (Big Al's, Station 2) is about 4 mi off route from Burner.</td></tr>`;
   document.getElementById("foodtable").innerHTML = `<thead><tr><th>Day</th><th>Day mi</th><th>Trip mi</th><th>Stop</th><th>Options</th></tr></thead><tbody>${rows}${gaps}</tbody>`;
 }
 

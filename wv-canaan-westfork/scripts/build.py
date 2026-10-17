@@ -10,14 +10,17 @@ W, _ = load("source/west-fork-weekender.gpx")
 
 _, j = nearest(C, W[0])
 canaan_from_alpena = C[j:] + C[1 : j + 1]
-day_breaks = [0, len(C) - j, len(canaan_from_alpena)]
+SPLIT_MI = 6.0
+dc = cumdist(C)
+k_camp = next(i for i, x in enumerate(dc) if x * M2MI >= SPLIT_MI)
+day_breaks = [0, len(C) - j - 1 + k_camp, len(canaan_from_alpena)]
 route = canaan_from_alpena + W[1:]
 day_breaks.append(len(route) - 1)
 
 dist = cumdist(route)
 days = [
-    ("Day 1 (Fri): Alpena to Davis via Bickle Knob, Shavers Fork, Parsons, Blackwater Canyon", 0),
-    ("Day 2 (Sat): Davis to Alpena via Canaan Loop Rd, Canaan Valley, Gladwin", 1),
+    ("Day 1 (Fri): Alpena to Canaan Loop Rd camp via Bickle Knob, Shavers Fork, Parsons, Blackwater Canyon, Davis", 0),
+    ("Day 2 (Sat): Canaan Loop Rd camp to Alpena via Canaan Valley, Gladwin", 1),
     ("Day 3 (Sun): West Fork loop via Glady, West Fork Rail Trail, Burner, Little River, Middle Mountain", 2),
 ]
 
@@ -55,9 +58,11 @@ WPTS = [
     ("Food: Thomas", 39.1495, -79.4970, "Restaurant",
      "Cafes/restaurants in Thomas."),
     ("Food: Davis", 39.1288399, -79.46318, "Restaurant",
-     "Davis: restaurants, grocery, Blackwater Bikes. End of Day 1 / start of Day 2."),
-    ("Blackwater Falls SP Campground", 39.11613607995228, -79.48913891665221, "Campground",
-     "State park campground (fee). Dispersed camping NOT allowed in state parks or on private land around Parsons-Thomas-Davis."),
+     "Davis: restaurants, breweries, Blackwater Bikes. Eat dinner and fill all water here before riding out to the Canaan Loop Rd camp."),
+    ("Blackwater Falls SP Campground (backup)", 39.11613607995228, -79.48913891665221, "Campground",
+     "Backup only: state park campground, around $50/night and nearly booked. Dispersed camping NOT allowed in the state park or on private land around Parsons-Thomas-Davis."),
+    ("Fri Camp: Canaan Loop Rd Dispersed", route[day_breaks[1]][0], route[day_breaks[1]][1], "Campground",
+     "Free MNF dispersed camping 100+ ft off Canaan Loop Rd (FR 13). Target point only: confirm in onX that you are past the Blackwater Falls SP boundary, then pick any flat spot. No water, toilets or tables."),
     ("Bickle Knob Tower (spur)", 38.93410495546047, -79.73149166037656, "Scenic Area",
      "Short out-and-back spur to the fire tower."),
     ("Hike-a-bike to Little River Rd", 38.61708314623242, -79.80753902108337, "Danger Area",

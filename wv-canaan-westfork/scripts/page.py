@@ -19,11 +19,15 @@ def nearest_idx(pts, q):
 
 
 j = nearest_idx(C, W[0])
-day_pts = [C[j:], C[1 : j + 1], W]
+SPLIT_MI = 6.0
+dc = cumdist(C)
+k = next(i for i, x in enumerate(dc) if x * M2MI >= SPLIT_MI)
+FRI_DAVIS = round(cumdist(C[j:])[-1] * M2MI, 1)
+day_pts = [C[j:] + C[1 : k + 1], C[k : j + 1], W]
 
 DAY_META = [
-    {"id": "fri", "label": "Fri", "title": "Alpena to Davis", "via": "Bickle Knob, Shavers Fork, Parsons, Blackwater Canyon"},
-    {"id": "sat", "label": "Sat", "title": "Davis to Alpena", "via": "Canaan Loop Rd, Canaan Valley, Gladwin"},
+    {"id": "fri", "label": "Fri", "title": "Alpena to Canaan Loop Rd", "via": "Bickle Knob, Shavers Fork, Parsons, Blackwater Canyon, Davis"},
+    {"id": "sat", "label": "Sat", "title": "Canaan Loop Rd to Alpena", "via": "Canaan Mountain, Canaan Valley, Gladwin"},
     {"id": "sun", "label": "Sun", "title": "West Fork loop", "via": "Glady, West Fork Rail Trail, Little River, Middle Mountain"},
 ]
 
@@ -101,20 +105,22 @@ STEPS = {
         (47.3, 47.5, "Thomas", "Thomas", "town",
          "Food, coffee and beer in a small downtown. A short street section here doubles back on itself."),
         (47.5, 51.0, "WV-32 to Davis", "WV-32", "paved",
-         "Busy but unavoidable highway stretch into Davis. Ride single file. End of Day 1 at Blackwater Bikes."),
+         "Busy but unavoidable highway stretch into Davis. Ride single file. Eat dinner here and fill every bottle: there is no water at camp."),
+        (FRI_DAVIS, FRI_DAVIS + 1.8, "Davis to Blackwater Falls State Park", "Blackwater Falls SP roads", "paved",
+         "Roll out of Davis through the state park. No camping until you are past the park boundary."),
+        (FRI_DAVIS + 1.8, FRI_DAVIS + SPLIT_MI, "Onto Canaan Loop Rd to camp", "Canaan Loop Rd (FR 13)", "rough 4WD",
+         "Past Lindy Point and out of the state park onto Monongahela NF land. Check the public-land layer in onX, then pick a flat spot 100+ ft off the road. Free. No toilets, tables or water. Aim to arrive with daylight left."),
     ],
     "sat": [
-        (0.0, 1.8, "Davis to Blackwater Falls State Park", "Blackwater Falls SP roads", "paved",
-         "Roll out of Davis into the state park. Falls overlook just off route. Park campground is here if you stayed Friday night."),
-        (1.8, 19.5, "Canaan Loop Road", "Canaan Loop Rd (FR 13)", "rough 4WD",
-         "About 15 mi of rugged, often muddy forest road and jeep track around Canaan Mountain, past Lindy Point. Wide tires help, and the Big Honzo is right at home. Climbs to the day's high point near 3,800 ft before reaching WV-32 at Canaan Heights."),
-        (19.5, 29.0, "Down into Canaan Valley", "Canaan Valley roads", "mixed",
+        (0.0, 19.5 - SPLIT_MI, "Break camp and finish Canaan Loop Road", "Canaan Loop Rd (FR 13)", "rough 4WD",
+         "The rest of the loop road: rugged, often muddy forest road and jeep track around Canaan Mountain. Wide tires help, and the Big Honzo is right at home. Climbs to the day's high point near 3,800 ft before reaching WV-32 at Canaan Heights."),
+        (19.5 - SPLIT_MI, 29.0 - SPLIT_MI, "Down into Canaan Valley", "Canaan Valley roads", "mixed",
          "Drop to the valley floor near 3,200 ft and cruise south through Canaan Valley, passing near Canaan Valley State Park and the resort area."),
-        (29.0, 37.5, "Descend toward Dry Fork and Gladwin", "Dry Fork valley", "mixed",
+        (29.0 - SPLIT_MI, 37.5 - SPLIT_MI, "Descend toward Dry Fork and Gladwin", "Dry Fork valley", "mixed",
          "Long descent off the south end of the valley down to the Dry Fork of the Cheat, ending at the Gladwin dispersed camping area."),
-        (37.5, 44.0, "Climb out of Gladwin", "Gladwin climb", "gravel",
+        (37.5 - SPLIT_MI, 44.0 - SPLIT_MI, "Climb out of Gladwin", "Gladwin climb", "gravel",
          "The big climb of the day. A 2025 trip report took Sully Road down to Lower Glady dispersed camping from this climb as a bail-out or overnight option."),
-        (44.0, 50.6, "Roll and descend back to Alpena", "To Alpena", "mixed",
+        (44.0 - SPLIT_MI, 999, "Roll and descend back to Alpena", "To Alpena", "mixed",
          "Rolling ridge, then a fast drop back to the car. The final mile is the same road you finish on Sunday."),
     ],
     "sun": [
@@ -160,19 +166,20 @@ STOPS = [
         ("Mountain State Brewing", "Pub with wood-fired flatbreads"),
         ("Happy & More Bakery and Cafe", "Bakery"),
     ]),
-    ("fri", 51.0, "food", "Davis", 0, "End of Day 1. Restaurants, breweries and a bike shop.", [
+    ("fri", FRI_DAVIS, "food", "Davis", 0, "Dinner and a full water refill before riding out to camp.", [
         ("Sirianni's Cafe", "474 William Ave. Pizza and Italian, cash only per a 2020 review, expect waits"),
         ("Blackwater Brewing Co.", "Brewery"),
         ("Stumptown Ales", "Brewery"),
         ("Sawmill Restaurant", "Diner"),
         ("Hellbender Burritos", "New owners, reopening in 2026. Not confirmed open"),
-        ("Blackwater Bikes", "Bike shop, end of Day 1"),
+        ("Blackwater Bikes", "Bike shop"),
     ]),
-    ("sat", 1.8, "camp", "Blackwater Falls SP Campground", 0.27, "State park campground, fees apply. Best Friday-night option since dispersed camping is not allowed around Davis.", []),
-    ("sat", 27.9, "sight", "Canaan Valley State Park", 0.9, "Route passes about 1 mi away. Food options here were not researched.", []),
-    ("sat", 37.5, "camp", "Gladwin dispersed camping", 0.01, "Free MNF site where Glady Fork meets Dry Fork. No facilities, pack it out.", []),
-    ("sat", 40.8, "camp", "Lower Glady dispersed (FR 162)", 1.15, "Off route via Sully Rd. Vault toilets. Filter or boil water, giardia reported. Location differs between sources.", []),
-    ("sat", 50.6, "park", "Back at the car", 0, "Restock food and water for Sunday. Bear Heaven is a 4 mi drive up FR 91 for Saturday night.", []),
+    ("fri", FRI_DAVIS + 1.8, "camp", "Blackwater Falls SP Campground (backup)", 0.27, "Backup only: around $50 a night and nearly booked.", []),
+    ("fri", FRI_DAVIS + SPLIT_MI, "camp", "Friday camp: Canaan Loop Rd dispersed", 0, "Free MNF dispersed camping 100+ ft off FR 13. Confirm you are past the state park boundary in onX. At least seven established sites along the road, the best ones with fire rings are farther east. No water.", []),
+    ("sat", 27.9 - SPLIT_MI, "sight", "Canaan Valley State Park", 0.9, "Route passes about 1 mi away. Food options here were not researched.", []),
+    ("sat", 37.5 - SPLIT_MI, "camp", "Gladwin dispersed camping", 0.01, "Free MNF site where Glady Fork meets Dry Fork. No facilities, pack it out.", []),
+    ("sat", 40.8 - SPLIT_MI, "camp", "Lower Glady dispersed (FR 162)", 1.15, "Off route via Sully Rd. Vault toilets. Filter or boil water, giardia reported. Location differs between sources.", []),
+    ("sat", 999, "park", "Back at the car", 0, "Restock food and water for Sunday. Bear Heaven is a 4 mi drive up FR 91 for Saturday night.", []),
     ("sun", 9.5, "sight", "Glady Presbyterian Church", 0.02, "Built 1905.", []),
     ("sun", 24.7, "camp", "West Fork dispersed (FR 44)", 2.0, "Off route, 2 mi south of the Burner turn. Durbin restaurants (Big Al's, Station 2) are another 2 mi beyond.", []),
     ("sun", 27.7, "camp", "Little River dispersed (FR 17)", 0.04, "Several miles of sites. No facilities or potable water.", []),
@@ -201,8 +208,10 @@ def build():
     for meta, pts in zip(DAY_META, day_pts):
         smp, d = sample(pts)
         g, l = stats(pts, d, 0, 999)
-        days.append({**meta, "miles": round(d[-1] * M2MI, 1), "gain": g, "loss": l, "pts": smp, "line": simplify(pts, d)})
+        miles = round(d[-1] * M2MI, 1)
+        days.append({**meta, "miles": miles, "gain": g, "loss": l, "pts": smp, "line": simplify(pts, d)})
         for a, b, title, road, surface, body in STEPS[meta["id"]]:
+            a, b = round(min(a, miles), 2), round(min(b, miles), 2)
             sg, sl = stats(pts, d, a, b)
             p = at(pts, d, a)
             steps.append({"day": meta["id"], "a": a, "b": b, "title": title, "road": road, "surface": surface,
@@ -210,6 +219,7 @@ def build():
         for day, mi, kind, name, off, note, options in STOPS:
             if day != meta["id"]:
                 continue
+            mi = round(min(mi, miles), 2)
             p = at(pts, d, mi)
             stops.append({"day": day, "mi": mi, "kind": kind, "name": name, "off": off, "note": note,
                           "options": [{"name": n, "detail": x} for n, x in options],

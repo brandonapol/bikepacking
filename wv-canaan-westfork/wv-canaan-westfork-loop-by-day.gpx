@@ -15,14 +15,14 @@
   </wpt>
   <wpt lat="39.007200" lon="-79.549100">
     <name>Gladwin Dispersed Camping</name>
-    <cmt>Day 2 mi 37.5 / trip mi 88.5. Free MNF dispersed, Glady Fork / Dry Fork confluence, Gladwin Rd (CR 12). No facilities, pack it out. Filter water.</cmt>
-    <desc>Day 2 mi 37.5 / trip mi 88.5. Free MNF dispersed, Glady Fork / Dry Fork confluence, Gladwin Rd (CR 12). No facilities, pack it out. Filter water.</desc>
+    <cmt>Day 2 mi 31.4 / trip mi 88.5. Free MNF dispersed, Glady Fork / Dry Fork confluence, Gladwin Rd (CR 12). No facilities, pack it out. Filter water.</cmt>
+    <desc>Day 2 mi 31.4 / trip mi 88.5. Free MNF dispersed, Glady Fork / Dry Fork confluence, Gladwin Rd (CR 12). No facilities, pack it out. Filter water.</desc>
     <sym>Campground</sym>
   </wpt>
   <wpt lat="38.978178" lon="-79.590459">
     <name>Lower Glady Dispersed Camping (FR 162)</name>
-    <cmt>Day 2 mi 40.8 / trip mi 91.8 (1.2 mi off route). MNF designated dispersed sites on Glady Fork near Milus TH. Coordinates differ by source (DispersedApp 38.978,-79.590; Campendium 38.964,-79.607); verify on MNF map. Filter/boil water (giardia reported).</cmt>
-    <desc>Day 2 mi 40.8 / trip mi 91.8 (1.2 mi off route). MNF designated dispersed sites on Glady Fork near Milus TH. Coordinates differ by source (DispersedApp 38.978,-79.590; Campendium 38.964,-79.607); verify on MNF map. Filter/boil water (giardia reported).</desc>
+    <cmt>Day 2 mi 34.8 / trip mi 91.8 (1.2 mi off route). MNF designated dispersed sites on Glady Fork near Milus TH. Coordinates differ by source (DispersedApp 38.978,-79.590; Campendium 38.964,-79.607); verify on MNF map. Filter/boil water (giardia reported).</cmt>
+    <desc>Day 2 mi 34.8 / trip mi 91.8 (1.2 mi off route). MNF designated dispersed sites on Glady Fork near Milus TH. Coordinates differ by source (DispersedApp 38.978,-79.590; Campendium 38.964,-79.607); verify on MNF map. Filter/boil water (giardia reported).</desc>
     <sym>Campground</sym>
   </wpt>
   <wpt lat="38.632427" lon="-79.761830">
@@ -63,14 +63,20 @@
   </wpt>
   <wpt lat="39.128840" lon="-79.463180">
     <name>Food: Davis</name>
-    <cmt>Day 1 mi 51.0 / trip mi 51.0. Davis: restaurants, grocery, Blackwater Bikes. End of Day 1 / start of Day 2.</cmt>
-    <desc>Day 1 mi 51.0 / trip mi 51.0. Davis: restaurants, grocery, Blackwater Bikes. End of Day 1 / start of Day 2.</desc>
+    <cmt>Day 1 mi 51.0 / trip mi 51.0. Davis: restaurants, breweries, Blackwater Bikes. Eat dinner and fill all water here before riding out to the Canaan Loop Rd camp.</cmt>
+    <desc>Day 1 mi 51.0 / trip mi 51.0. Davis: restaurants, breweries, Blackwater Bikes. Eat dinner and fill all water here before riding out to the Canaan Loop Rd camp.</desc>
     <sym>Restaurant</sym>
   </wpt>
   <wpt lat="39.116136" lon="-79.489139">
-    <name>Blackwater Falls SP Campground</name>
-    <cmt>Day 2 mi 1.8 / trip mi 52.8 (0.3 mi off route). State park campground (fee). Dispersed camping NOT allowed in state parks or on private land around Parsons-Thomas-Davis.</cmt>
-    <desc>Day 2 mi 1.8 / trip mi 52.8 (0.3 mi off route). State park campground (fee). Dispersed camping NOT allowed in state parks or on private land around Parsons-Thomas-Davis.</desc>
+    <name>Blackwater Falls SP Campground (backup)</name>
+    <cmt>Day 1 mi 52.8 / trip mi 52.8 (0.3 mi off route). Backup only: state park campground, around $50/night and nearly booked. Dispersed camping NOT allowed in the state park or on private land around Parsons-Thomas-Davis.</cmt>
+    <desc>Day 1 mi 52.8 / trip mi 52.8 (0.3 mi off route). Backup only: state park campground, around $50/night and nearly booked. Dispersed camping NOT allowed in the state park or on private land around Parsons-Thomas-Davis.</desc>
+    <sym>Campground</sym>
+  </wpt>
+  <wpt lat="39.095970" lon="-79.528310">
+    <name>Fri Camp: Canaan Loop Rd Dispersed</name>
+    <cmt>Day 1 mi 57.0 / trip mi 57.0. Free MNF dispersed camping 100+ ft off Canaan Loop Rd (FR 13). Target point only: confirm in onX that you are past the Blackwater Falls SP boundary, then pick any flat spot. No water, toilets or tables.</cmt>
+    <desc>Day 1 mi 57.0 / trip mi 57.0. Free MNF dispersed camping 100+ ft off Canaan Loop Rd (FR 13). Target point only: confirm in onX that you are past the Blackwater Falls SP boundary, then pick any flat spot. No water, toilets or tables.</desc>
     <sym>Campground</sym>
   </wpt>
   <wpt lat="38.934105" lon="-79.731492">
@@ -86,7 +92,7 @@
     <sym>Danger Area</sym>
   </wpt>
   <trk>
-    <name>Day 1 (Fri): Alpena to Davis via Bickle Knob, Shavers Fork, Parsons, Blackwater Canyon</name>
+    <name>Day 1 (Fri): Alpena to Canaan Loop Rd camp via Bickle Knob, Shavers Fork, Parsons, Blackwater Canyon, Davis</name>
     <trkseg>
       <trkpt lat="38.907410" lon="-79.654180"><ele>815.3</ele></trkpt>
       <trkpt lat="38.907740" lon="-79.654010"><ele>811.8</ele></trkpt>
@@ -2917,12 +2923,6 @@
       <trkpt lat="39.128810" lon="-79.462980"><ele>940.7</ele></trkpt>
       <trkpt lat="39.128830" lon="-79.463140"><ele>941.0</ele></trkpt>
       <trkpt lat="39.128880" lon="-79.463470"><ele>941.3</ele></trkpt>
-    </trkseg>
-  </trk>
-  <trk>
-    <name>Day 2 (Sat): Davis to Alpena via Canaan Loop Rd, Canaan Valley, Gladwin</name>
-    <trkseg>
-      <trkpt lat="39.128880" lon="-79.463470"><ele>941.3</ele></trkpt>
       <trkpt lat="39.128950" lon="-79.463560"><ele>942.1</ele></trkpt>
       <trkpt lat="39.129050" lon="-79.463930"><ele>943.8</ele></trkpt>
       <trkpt lat="39.128540" lon="-79.466590"><ele>945.9</ele></trkpt>
@@ -3298,6 +3298,12 @@
       <trkpt lat="39.096930" lon="-79.525970"><ele>959.5</ele></trkpt>
       <trkpt lat="39.096700" lon="-79.526840"><ele>959.7</ele></trkpt>
       <trkpt lat="39.096450" lon="-79.527480"><ele>962.4</ele></trkpt>
+      <trkpt lat="39.095970" lon="-79.528310"><ele>962.8</ele></trkpt>
+    </trkseg>
+  </trk>
+  <trk>
+    <name>Day 2 (Sat): Canaan Loop Rd camp to Alpena via Canaan Valley, Gladwin</name>
+    <trkseg>
       <trkpt lat="39.095970" lon="-79.528310"><ele>962.8</ele></trkpt>
       <trkpt lat="39.095740" lon="-79.528640"><ele>962.9</ele></trkpt>
       <trkpt lat="39.095420" lon="-79.529140"><ele>963.2</ele></trkpt>
